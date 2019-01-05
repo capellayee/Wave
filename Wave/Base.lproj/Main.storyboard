@@ -32,7 +32,14 @@
                             <outlet property="delegate" destination="scP-QG-GxX" id="xMm-CP-mpe"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Wave" id="C2P-jc-iPx"/>
+                    <navigationItem key="navigationItem" title="Wave" id="C2P-jc-iPx">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="F2m-Wr-5Lv">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="addButtonPressed:" destination="scP-QG-GxX" id="55a-zw-85O"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aCB-Qi-hnx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

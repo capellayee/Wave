@@ -11,13 +11,16 @@ import UIKit
 
 class TodoListViewController : UITableViewController {
     
-    var itemsArray = ["meditate", "cook shroomies", "yoga"]
+    var itemsArray = [TodoItem]()
     
     let defaults = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if let items = defaults.array(forKey: "TodoListArray") as? [String] {
+
+        itemsArray.append(TodoItem(titleText: "Grate cauliflower rice"))
+        
+        if let items = defaults.array(forKey: "TodoListArray") as? [TodoItem] {
             itemsArray = items
         }
     }
@@ -30,18 +33,18 @@ class TodoListViewController : UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "todoItemCell", for: indexPath)
-        cell.textLabel?.text = itemsArray[indexPath.row]
+        let item = itemsArray[indexPath.row]
+        
+        cell.textLabel?.text = item.title
+        cell.accessoryType = item.isComplete ? .checkmark : .none
         return cell
     }
     
     //MARK: TableView Delegate methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .none
-        } else {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        }
+        itemsArray[indexPath.row].isComplete = !itemsArray[indexPath.row].isComplete
+        tableView.reloadData()
         
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -52,7 +55,7 @@ class TodoListViewController : UITableViewController {
         let saveItemAction = UIAlertAction(title: "Add", style: .default) {
             (action) in
             if let newItem = alert.textFields?.first?.text {
-                self.itemsArray.append(newItem)
+                self.itemsArray.append(TodoItem(titleText: newItem))
                 
                 self.defaults.set(self.itemsArray, forKey: "TodoListArray")
                 

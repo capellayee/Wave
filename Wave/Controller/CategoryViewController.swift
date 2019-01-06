@@ -18,7 +18,7 @@ class CategoryViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //loadItems()
+        loadItems()
     }
     
     //MARK: Table View data source methods
@@ -107,7 +107,25 @@ class CategoryViewController: UITableViewController {
     
     
     //MARK: Table view delegate methods
-
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("selected")
+        print(categoryArray[indexPath.row])
+        print("performing segue")
+        performSegue(withIdentifier: "goToTodoItems", sender: self)
+        print("finished segue")
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let destination = segue.destination as! TodoListViewController
+        if let indexPath = tableView.indexPathForSelectedRow {
+            destination.parentCategory = categoryArray[indexPath.row]
+        }
+        
+    }
+    
+//    override func performSegue(withIdentifier identifier: String, sender: Any?) {
+//        self.segue
+//    }
     
     
 

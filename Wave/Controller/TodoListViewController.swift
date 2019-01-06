@@ -13,13 +13,16 @@ import CoreData
 class TodoListViewController : UITableViewController {
     
     var itemsArray = [TodoItem]()
+    var parentCategory : Category? {
+        didSet {
+            loadItems()
+        }
+    }
     
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        loadItems()
     }
     
     
@@ -62,6 +65,7 @@ class TodoListViewController : UITableViewController {
                 let newItem = TodoItem(context: self.context)
                 newItem.title = newItemTitle
                 newItem.isComplete = false
+                newItem.parentCategory = self.parentCategory
                 self.itemsArray.append(newItem)
                 
                 //self.defaults.set(self.itemsArray, forKey: "TodoListArray")
@@ -99,6 +103,19 @@ class TodoListViewController : UITableViewController {
     }
     
     func loadItems(with request: NSFetchRequest<TodoItem> = TodoItem.fetchRequest()) {
+        let parentPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", parentCategory!.name!)
+        if let addedPredicate = request.predicate {
+            let allPredicates = NSCompoundPredicate(andPredicateWithSubpredicates: [parentPredicate, addedPredicate])
+            request.predicate = allPredicates
+            print("found the OG predicate. it is:")
+            print(addedPredicate)
+            print(request.predicate)
+        }
+        else {
+            print("just adding the parent predicate to the request")
+            request.predicate = parentPredicate
+        }
+        
         do {
             itemsArray = try context.fetch(request)
         } catch {
@@ -109,8 +126,10 @@ class TodoListViewController : UITableViewController {
     
     func createRequest(withPredicate predicate: String, withKeyword keyword: String, withSortKey sortKey: String, sortAscending: Bool) -> NSFetchRequest<TodoItem> {
         let request : NSFetchRequest<TodoItem> = TodoItem.fetchRequest()
-        // now specify a query
-        request.predicate = NSPredicate(format: predicate, keyword)
+        
+        // now specify your predicate
+        let predicate = NSPredicate(format: predicate, keyword)
+        request.predicate = predicate
         
         // now specify sorting
         request.sortDescriptors = [NSSortDescriptor(key: sortKey, ascending: sortAscending)]
@@ -141,7 +160,8 @@ extension TodoListViewController : UISearchBarDelegate {
                 searchBar.resignFirstResponder()
             }
         } else {
-            loadItems(with: createRequest(withPredicate: "title CONTAINS[cd] %@", withKeyword: searchText, withSortKey: "title", sortAscending: true))
+            loadItems(with: createRequest(withPredicate: "title CONTAINS[cd] %@", withKeyword: searchText,
+                withSortKey: "title", sortAscending: true))
         }
     }
 }

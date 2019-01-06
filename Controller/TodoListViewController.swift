@@ -20,9 +20,6 @@ class TodoListViewController : UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist"))
-
         loadItems()
     }
     
@@ -44,7 +41,7 @@ class TodoListViewController : UITableViewController {
     //MARK: TableView Delegate methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        //itemsArray[indexPath.row].isComplete = !itemsArray[indexPath.row].isComplete
+        itemsArray[indexPath.row].isComplete = !itemsArray[indexPath.row].isComplete
 
         // if you want to delete when selecting. the order matters a huge deal!
 //        context.delete(itemsArray[indexPath.row])
@@ -92,8 +89,6 @@ class TodoListViewController : UITableViewController {
     }
     
     func saveData() {
-        
-        
         do {
             try context.save()
         } catch {
@@ -104,14 +99,24 @@ class TodoListViewController : UITableViewController {
         tableView.reloadData()
     }
     
-    func loadItems() {
-        // read the saved data and populate the screen
-        let request : NSFetchRequest<TodoItem> = TodoItem.fetchRequest()
+    func loadItems(with request: NSFetchRequest<TodoItem> = TodoItem.fetchRequest()) {
         do {
             itemsArray = try context.fetch(request)
         } catch {
             print("Error fetching data from context: \(error)")
         }
+        tableView.reloadData()
+    }
+    
+    func createRequest(withPredicate predicate: String, withKeyword keyword: String, withSortKey sortKey: String, sortAscending: Bool) -> NSFetchRequest<TodoItem> {
+        let request : NSFetchRequest<TodoItem> = TodoItem.fetchRequest()
+        // now specify a query
+        request.predicate = NSPredicate(format: predicate, keyword)
+        
+        // now specify sorting
+        request.sortDescriptors = [NSSortDescriptor(key: sortKey, ascending: sortAscending)]
+        
+        return request
     }
     
 }
@@ -121,6 +126,23 @@ extension TodoListViewController : UISearchBarDelegate {
     
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        loadItems(with: createRequest(withPredicate: "title CONTAINS[cd] %@", withKeyword: searchBar.text!, withSortKey: "title", sortAscending: true))
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
+        print(searchText)
+        if searchText.count == 0 {
+            loadItems()
+            
+            // use dispatch queue to assign tasks to different threads
+            // specifically, run this mehtod in the main queue
+            
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
+            }
+        } else {
+            loadItems(with: createRequest(withPredicate: "title CONTAINS[cd] %@", withKeyword: searchText, withSortKey: "title", sortAscending: true))
+        }
     }
 }

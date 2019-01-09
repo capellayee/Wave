@@ -13,8 +13,9 @@
 		DE3AA06621E0486500CC0B2A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE3AA06521E0486500CC0B2A /* Assets.xcassets */; };
 		DE3AA06921E0486500CC0B2A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE3AA06721E0486500CC0B2A /* LaunchScreen.storyboard */; };
 		DE3AA07121E04F9800CC0B2A /* TodoListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3AA07021E04F9800CC0B2A /* TodoListViewController.swift */; };
-		DE3AA07A21E0E46100CC0B2A /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DE3AA07821E0E46100CC0B2A /* DataModel.xcdatamodeld */; };
 		DE3AA09F21E1D56200CC0B2A /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3AA09E21E1D56200CC0B2A /* CategoryViewController.swift */; };
+		DE3AA0A321E1FAE100CC0B2A /* TodoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3AA0A221E1FAE100CC0B2A /* TodoItem.swift */; };
+		DE3AA0A521E1FAE900CC0B2A /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3AA0A421E1FAE900CC0B2A /* Category.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,8 +28,9 @@
 		DE3AA06821E0486500CC0B2A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DE3AA06A21E0486500CC0B2A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DE3AA07021E04F9800CC0B2A /* TodoListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListViewController.swift; sourceTree = "<group>"; };
-		DE3AA07921E0E46100CC0B2A /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
 		DE3AA09E21E1D56200CC0B2A /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
+		DE3AA0A221E1FAE100CC0B2A /* TodoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItem.swift; sourceTree = "<group>"; };
+		DE3AA0A421E1FAE900CC0B2A /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		EFB8D9DC8E82DCFE93FA5FD0 /* Pods-Wave.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Wave.release.xcconfig"; path = "Pods/Target Support Files/Pods-Wave/Pods-Wave.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -86,7 +88,8 @@
 		DE3AA07421E0952300CC0B2A /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				DE3AA07821E0E46100CC0B2A /* DataModel.xcdatamodeld */,
+				DE3AA0A421E1FAE900CC0B2A /* Category.swift */,
+				DE3AA0A221E1FAE100CC0B2A /* TodoItem.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -250,8 +253,9 @@
 			files = (
 				DE3AA09F21E1D56200CC0B2A /* CategoryViewController.swift in Sources */,
 				DE3AA07121E04F9800CC0B2A /* TodoListViewController.swift in Sources */,
-				DE3AA07A21E0E46100CC0B2A /* DataModel.xcdatamodeld in Sources */,
+				DE3AA0A321E1FAE100CC0B2A /* TodoItem.swift in Sources */,
 				DE3AA05F21E0486400CC0B2A /* AppDelegate.swift in Sources */,
+				DE3AA0A521E1FAE900CC0B2A /* Category.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -451,19 +455,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		DE3AA07821E0E46100CC0B2A /* DataModel.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				DE3AA07921E0E46100CC0B2A /* DataModel.xcdatamodel */,
-			);
-			currentVersion = DE3AA07921E0E46100CC0B2A /* DataModel.xcdatamodel */;
-			path = DataModel.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = DE3AA05321E0486400CC0B2A /* Project object */;
 }

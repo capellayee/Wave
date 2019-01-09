@@ -7,13 +7,13 @@
 //
 
 import UIKit
-import CoreData
+import RealmSwift
 
 class CategoryViewController: UITableViewController {
 
-    var categoryArray = [Category]()
+    var categories : Results<Category>?
     
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    lazy var realm = try! Realm() // here the exclamation mark isn't bad. according to realm, the first time you create a realm instance is created it may fail.
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,14 +23,20 @@ class CategoryViewController: UITableViewController {
     
     //MARK: Table View data source methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categoryArray.count
+        return categories?.count ?? 1
+        
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "categoryCell", for: indexPath)
-        let category = categoryArray[indexPath.row]
         
-        cell.textLabel?.text = category.name
+        if let categoryName = categories?[indexPath.row].name {
+            cell.textLabel?.text = categoryName
+        } else {
+            cell.textLabel?.text = "No categories yet"
+            cell.textLabel?.textAlignment = .center
+            cell.textLabel?.textColor = UIColor.gray
+        }
         return cell
     }
     
@@ -44,11 +50,10 @@ class CategoryViewController: UITableViewController {
             let saveCategoryAction = UIAlertAction(title: "Add", style: .default) {
                 (action) in
                 if let newCategoryName = alert.textFields?.first?.text {
-                    let newCategory = Category(context: self.context)
+                    let newCategory = Category()
                     newCategory.name = newCategoryName
-                    self.categoryArray.append(newCategory)
                     
-                    self.saveData()
+                    self.save(category: newCategory)
                 }
             }
             alert.addAction(saveCategoryAction)
@@ -73,9 +78,11 @@ class CategoryViewController: UITableViewController {
     
     
         //MARK: Table view data manipulation methods
-        func saveData() {
+    func save(category: Category) {
             do {
-                try context.save()
+                try realm.write {
+                    realm.add(category)
+                }
             } catch {
                 let nserror = error as NSError
                 fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
@@ -84,49 +91,21 @@ class CategoryViewController: UITableViewController {
             tableView.reloadData()
         }
         
-        func loadItems(with request: NSFetchRequest<Category> = Category.fetchRequest()) {
-            do {
-                categoryArray = try context.fetch(request)
-            } catch {
-                print("Error fetching data from context: \(error)")
-            }
+        func loadItems() {
+            categories = realm.objects(Category.self)
             tableView.reloadData()
         }
-        
-        func createRequest(withPredicate predicate: String, withKeyword keyword: String, withSortKey sortKey: String, sortAscending: Bool) -> NSFetchRequest<Category> {
-            let request : NSFetchRequest<Category> = Category.fetchRequest()
-            // now specify a query
-            request.predicate = NSPredicate(format: predicate, keyword)
-            
-            // now specify sorting
-            request.sortDescriptors = [NSSortDescriptor(key: sortKey, ascending: sortAscending)]
-            
-            return request
-        }
-    
-    
     
     //MARK: Table view delegate methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("selected")
-        print(categoryArray[indexPath.row])
-        print("performing segue")
         performSegue(withIdentifier: "goToTodoItems", sender: self)
-        print("finished segue")
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let destination = segue.destination as! TodoListViewController
         if let indexPath = tableView.indexPathForSelectedRow {
-            destination.parentCategory = categoryArray[indexPath.row]
+            destination.parentCategory = categories?[indexPath.row]
         }
         
     }
-    
-//    override func performSegue(withIdentifier identifier: String, sender: Any?) {
-//        self.segue
-//    }
-    
-    
-
 }

@@ -16,6 +16,7 @@
 		DE3AA09F21E1D56200CC0B2A /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3AA09E21E1D56200CC0B2A /* CategoryViewController.swift */; };
 		DE3AA0A321E1FAE100CC0B2A /* TodoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3AA0A221E1FAE100CC0B2A /* TodoItem.swift */; };
 		DE3AA0A521E1FAE900CC0B2A /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3AA0A421E1FAE900CC0B2A /* Category.swift */; };
+		DE648F8421E6213E006EAE64 /* SwipeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE648F8321E6213E006EAE64 /* SwipeTableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		DE3AA09E21E1D56200CC0B2A /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
 		DE3AA0A221E1FAE100CC0B2A /* TodoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItem.swift; sourceTree = "<group>"; };
 		DE3AA0A421E1FAE900CC0B2A /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
+		DE648F8321E6213E006EAE64 /* SwipeTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeTableViewController.swift; sourceTree = "<group>"; };
 		EFB8D9DC8E82DCFE93FA5FD0 /* Pods-Wave.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Wave.release.xcconfig"; path = "Pods/Target Support Files/Pods-Wave/Pods-Wave.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -97,6 +99,7 @@
 		DE3AA07521E0952F00CC0B2A /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				DE648F8321E6213E006EAE64 /* SwipeTableViewController.swift */,
 				DE3AA09E21E1D56200CC0B2A /* CategoryViewController.swift */,
 				DE3AA07021E04F9800CC0B2A /* TodoListViewController.swift */,
 			);
@@ -207,15 +210,19 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Wave/Pods-Wave-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/ChameleonFramework/ChameleonFramework.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/SwipeCellKit/SwipeCellKit.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ChameleonFramework.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwipeCellKit.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -255,6 +262,7 @@
 				DE3AA07121E04F9800CC0B2A /* TodoListViewController.swift in Sources */,
 				DE3AA0A321E1FAE100CC0B2A /* TodoItem.swift in Sources */,
 				DE3AA05F21E0486400CC0B2A /* AppDelegate.swift in Sources */,
+				DE648F8421E6213E006EAE64 /* SwipeTableViewController.swift in Sources */,
 				DE3AA0A521E1FAE900CC0B2A /* Category.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

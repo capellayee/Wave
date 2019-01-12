@@ -9,8 +9,9 @@
 import Foundation
 import UIKit
 import RealmSwift
+import ChameleonFramework
 
-class TodoListViewController : UITableViewController {
+class TodoListViewController : SwipeTableViewController {
     
     var todoItems : Results<TodoItem>?
     var parentCategory : Category? {
@@ -18,13 +19,29 @@ class TodoListViewController : UITableViewController {
             loadItems()
         }
     }
+    @IBOutlet weak var searchBar: UISearchBar!
     
     let realm = try! Realm()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.separatorStyle = .none
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        
+        guard let category = parentCategory else {fatalError("No parent category found")}
+        
+        // set title
+        title = category.name
+        
+        updateNavBar(withHexCode: category.backgroundColor, searchBar: searchBar)
+        
+    }
+    
+    override func willMove(toParent parent: UIViewController?) {
+        self.updateNavBar(withHexCode: "B8C9F2", searchBar: searchBar)
+    }
     
     //MARK: TableView Datasource methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -32,14 +49,17 @@ class TodoListViewController : UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "todoItemCell", for: indexPath)
-
+        //let cell = tableView.dequeueReusableCell(withIdentifier: "todoItemCell", for: indexPath)
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        
         if let item = todoItems?[indexPath.row] {
-            print(item)
             cell.textLabel?.text = item.title
             cell.accessoryType = item.isComplete ? .checkmark : .none
+            let color = parentCategory?.backgroundColor ?? "008F00"
+            // note it's ok to force unwrap todoItems below because this only gets called if you have an item (see parent if let statement)
+            cell.backgroundColor = UIColor(hexString: color)?.darken(byPercentage: CGFloat(Double(indexPath.row) / Double(todoItems!.count)))
+            cell.textLabel?.textColor = UIColor(contrastingBlackOrWhiteColorOn: cell.backgroundColor!, isFlat: true)
         } else {
-            print("hey")
             cell.textLabel?.text = "No todo items yet"
             cell.textLabel?.textAlignment = .center
             cell.textLabel?.textColor = UIColor.gray
@@ -115,6 +135,20 @@ class TodoListViewController : UITableViewController {
     func loadItems() {
         todoItems = parentCategory?.todoItems.sorted(byKeyPath: "title", ascending: true)
         tableView.reloadData()
+    }
+    
+    //overriding function from swipe table view controller
+    override func updateModel(at indexPath: IndexPath) {
+        if let itemToDelete = self.todoItems?[indexPath.row] {
+            do {
+                try self.realm.write {
+                    self.realm.delete(itemToDelete)
+                }
+            } catch {
+                let nserror = error as NSError
+                fatalError("Error deleting category \(nserror), \(nserror.userInfo)")
+            }
+        }
     }
     
 }

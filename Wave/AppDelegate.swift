@@ -19,15 +19,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
+        // helper debug code to figure out what schema version i'm on.
+        let configCheck = Realm.Configuration();
+        do {
+            let fileUrlIs = try schemaVersionAtURL(configCheck.fileURL!)
+            print("schema version \(fileUrlIs)")
+        } catch  {
+            print(error)
+        }
+        
         let config = Realm.Configuration(
-            schemaVersion: 1,
+            schemaVersion: 4,
             migrationBlock: { migration, oldSchemaVersion in
-                if (oldSchemaVersion < 1) {
+                if (oldSchemaVersion < 4) {
                     // The enumerateObjects(ofType:_:) method iterates
-                    // over every Person object stored in the Realm file
-                    migration.enumerateObjects(ofType: TodoItem.className()) { oldObject, newObject in
-                        newObject!["dateCreated"] = Date()
+                    // over every Class object stored in the Realm file
+                    migration.enumerateObjects(ofType: Category.className()) { oldObject, newObject in
+                        let color = UIColor.randomFlat.hexValue()
+                        newObject!["backgroundColor"] = color
+                        print("hey!, added a new background color \(color)")
                     }
+
                 }
         })
     

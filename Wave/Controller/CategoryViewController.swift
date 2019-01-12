@@ -8,10 +8,12 @@
 
 import UIKit
 import RealmSwift
+import ChameleonFramework
 
-class CategoryViewController: UITableViewController {
+class CategoryViewController: SwipeTableViewController {
 
     var categories : Results<Category>?
+    var colors = [FlatRed(), FlatRedDark(), FlatOrange(), FlatOrangeDark(), FlatYellow(), FlatYellowDark(), FlatGreen(), FlatGreenDark(), FlatLime(), FlatLimeDark(), FlatSand(), FlatSandDark(), FlatCoffee(), FlatCoffeeDark(), FlatForestGreen(), FlatForestGreenDark()]
     
     lazy var realm = try! Realm() // here the exclamation mark isn't bad. according to realm, the first time you create a realm instance is created it may fail.
     
@@ -19,6 +21,12 @@ class CategoryViewController: UITableViewController {
         super.viewDidLoad()
         
         loadItems()
+        
+        tableView.separatorStyle = .none
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        updateNavBar(withHexCode: FlatPowderBlue().hexValue(), searchBar: nil)
     }
     
     //MARK: Table View data source methods
@@ -28,22 +36,25 @@ class CategoryViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "categoryCell", for: indexPath)
         
-        if let categoryName = categories?[indexPath.row].name {
-            cell.textLabel?.text = categoryName
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        
+        if let category = categories?[indexPath.row] {
+            cell.textLabel?.text = category.name
+            cell.backgroundColor = UIColor(hexString: category.backgroundColor) ?? UIColor(hexString: "008F00")
+            cell.textLabel?.textColor = UIColor(contrastingBlackOrWhiteColorOn: cell.backgroundColor!, isFlat: true)
         } else {
             cell.textLabel?.text = "No categories yet"
             cell.textLabel?.textAlignment = .center
             cell.textLabel?.textColor = UIColor.gray
         }
+        
         return cell
     }
     
     
     //MARK: Add new categories
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
-            print("button pressed")
             let alert = UIAlertController(title: "Add new todo item", message: nil, preferredStyle: .alert)
             
             // create a save action
@@ -52,7 +63,8 @@ class CategoryViewController: UITableViewController {
                 if let newCategoryName = alert.textFields?.first?.text {
                     let newCategory = Category()
                     newCategory.name = newCategoryName
-                    
+                    //newCategory.backgroundColor = UIColor.randomFlat.hexValue()
+                    newCategory.backgroundColor = self.colors[Int.random(in: 0...self.colors.count)].hexValue()
                     self.save(category: newCategory)
                 }
             }
@@ -78,7 +90,7 @@ class CategoryViewController: UITableViewController {
     
     
         //MARK: Table view data manipulation methods
-    func save(category: Category) {
+        func save(category: Category) {
             do {
                 try realm.write {
                     realm.add(category)
@@ -95,6 +107,23 @@ class CategoryViewController: UITableViewController {
             categories = realm.objects(Category.self)
             tableView.reloadData()
         }
+    
+    
+    //overriding function from swipe table view controller
+    override func updateModel(at indexPath: IndexPath) {
+        if let categoryToDelete = self.categories?[indexPath.row] {
+            do {
+                try self.realm.write {
+                    self.realm.delete(categoryToDelete)
+                }
+            } catch {
+                let nserror = error as NSError
+                fatalError("Error deleting category \(nserror), \(nserror.userInfo)")
+            }
+        }
+    }
+    
+    
     
     //MARK: Table view delegate methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
